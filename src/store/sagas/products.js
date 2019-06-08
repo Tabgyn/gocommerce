@@ -9,6 +9,6 @@ export function* loadProduct({ id }) {
 
     yield put(ProductActions.loadProductSuccess(response.data));
   } catch (error) {
-    yield put(ProductActions.loadProductFailure());
+    yield put(ProductActions.loadProductFailure('Não foi possível obter o produto'));
   }
 }

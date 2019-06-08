@@ -9,7 +9,7 @@ export function* loadCategories() {
 
     yield put(CategoriesActions.loadCategoriesSuccess(response.data));
   } catch (error) {
-    yield put(CategoriesActions.loadCategoriesFailure());
+    yield put(CategoriesActions.loadCategoriesFailure('Não foi possível obter as categorias'));
   }
 }
 

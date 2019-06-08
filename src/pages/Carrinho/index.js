@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
@@ -34,14 +35,35 @@ class Carrinho extends Component {
     },
   };
 
+  static propTypes = {
+    cart: PropTypes.shape({}).isRequired,
+    loadCartRequest: PropTypes.func.isRequired,
+    updateProductRequest: PropTypes.func.isRequired,
+    removeProductRequest: PropTypes.func.isRequired,
+  };
+
   componentDidMount() {
     const { loadCartRequest } = this.props;
 
     loadCartRequest();
   }
 
+  handleQuantity = (product, value) => {
+    if (value > 0) {
+      const { updateProductRequest } = this.props;
+
+      updateProductRequest(product.id, value);
+    }
+  };
+
+  handleRemove = (id) => {
+    const { removeProductRequest } = this.props;
+
+    removeProductRequest(id);
+  };
+
   renderProductItem = ({ item }) => (
-    <ProductItem onPress={() => this.handleItemPress(item)}>
+    <ProductItem>
       <ProductDetail>
         <ProductImage source={{ uri: item.image }} />
         <ProductLabels>
@@ -57,8 +79,8 @@ class Carrinho extends Component {
         </ProductLabels>
       </ProductDetail>
       <ProductActions>
-        <ProductAmount>1</ProductAmount>
-        <Icon name="times" size={16} color="#999" />
+        <ProductAmount onChangeText={text => this.handleQuantity(item, text)}>{item.quantity}</ProductAmount>
+        <Icon name="times" size={16} color="#999" onPress={() => this.handleRemove(item.id)} />
       </ProductActions>
     </ProductItem>
   );

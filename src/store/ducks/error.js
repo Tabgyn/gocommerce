@@ -5,25 +5,27 @@ import { createReducer, createActions } from 'reduxsauce';
  * Action Types & Creators
  */
 const { Types, Creators } = createActions({
-  loadProductRequest: ['id'],
-  loadProductSuccess: ['data'],
-  loadProductFailure: null,
+  setError: 'message',
+  hideError: null,
 });
 
-export const ProductTypes = Types;
+export const ErrorTypes = Types;
 export default Creators;
 
 /**
  * Inital State
  */
 const INITIAL_STATE = Immutable({
-  selectedProduct: [],
-  loading: true,
+  visible: false,
+  message: null,
 });
 
 /**
  * Reducer
  */
 export const reducer = createReducer(INITIAL_STATE, {
-  [Types.LOAD_PRODUCT_SUCCESS]: (state, { data }) => state.merge({ selectedProduct: data, loading: false }),
+  [Types.SET_ERROR]: (state, { message }) => state.merge({ visible: true, message }),
+  [Types.HIDE_ERROR]: state => state.merge({
+    visible: false,
+  }),
 });

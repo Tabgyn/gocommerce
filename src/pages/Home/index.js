@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ActivityIndicator } from 'react-native';
+import PropTypes from 'prop-types';
 import NumberFormat from 'react-number-format';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -18,7 +20,7 @@ import {
   ProductBrand,
   ProductPrice,
 } from './styles';
-import { colors } from '~/styles';
+import { colors, metrics } from '~/styles';
 
 class Home extends Component {
   static navigationOptions = {
@@ -29,6 +31,15 @@ class Home extends Component {
       fontWeight: 'bold',
     },
     headerBackTitle: null,
+  };
+
+  static propTypes = {
+    categories: PropTypes.shape({}).isRequired,
+    loadCategoriesRequest: PropTypes.func.isRequired,
+    setCurrent: PropTypes.func.isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   componentDidMount() {
@@ -44,14 +55,14 @@ class Home extends Component {
     setCurrent(id);
   };
 
-  handleItemPress = (product) => {
+  handleItemPress = (id) => {
     const { navigation } = this.props;
 
-    navigation.navigate('Detalhe', { product });
+    navigation.navigate('Detalhe', { id });
   };
 
   renderProductItem = ({ item }) => (
-    <ProductItem onPress={() => this.handleItemPress(item)}>
+    <ProductItem onPress={() => this.handleItemPress(item.id)}>
       <ProductImage source={{ uri: item.image }} />
       <ProductName>{item.name}</ProductName>
       <ProductBrand>{item.brand}</ProductBrand>
@@ -87,13 +98,17 @@ class Home extends Component {
           </MenuList>
         </MenuCategoria>
         <Container>
-          {!!categories.categoryProducts && (
-            <ProductList
-              data={categories.categoryProducts}
-              keyExtractor={item => String(item.id)}
-              renderItem={this.renderProductItem}
-              numColumns={2}
-            />
+          {categories.loading ? (
+            <ActivityIndicator style={{ marginTop: metrics.baseMargin * 2 }} />
+          ) : (
+            !!categories.categoryProducts && (
+              <ProductList
+                data={categories.categoryProducts}
+                keyExtractor={item => String(item.id)}
+                renderItem={this.renderProductItem}
+                numColumns={2}
+              />
+            )
           )}
         </Container>
       </>

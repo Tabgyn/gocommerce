@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  createAppContainer,
-  createBottomTabNavigator,
-  createStackNavigator,
-} from 'react-navigation';
+import { createAppContainer, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import Home from '~/pages/Home';
@@ -30,9 +26,7 @@ const CartStack = createStackNavigator(
   },
   {
     navigationOptions: {
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="shopping-cart" size={24} color={tintColor} solid />
-      ),
+      tabBarIcon: ({ tintColor }) => <Icon name="shopping-cart" size={24} color={tintColor} solid />,
     },
   },
 );

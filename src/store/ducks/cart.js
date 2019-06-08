@@ -8,10 +8,11 @@ const { Types, Creators } = createActions({
   loadCartRequest: null,
   loadCartSuccess: ['data'],
   loadCartFailure: null,
+  updateCartSuccess: ['data'],
+  updateCartFailure: null,
   addProductRequest: ['product'],
-  addProductSuccess: ['product'],
-  addProductFailure: null,
-  setAmountProduct: ['id', 'amount'],
+  updateProductRequest: ['id', 'quantity'],
+  removeProductRequest: ['id'],
 });
 
 export const CartTypes = Types;
@@ -23,7 +24,6 @@ export default Creators;
 const INITIAL_STATE = Immutable({
   data: [],
   subtotal: 0,
-  amountProduct: [],
 });
 
 /**
@@ -31,26 +31,15 @@ const INITIAL_STATE = Immutable({
  */
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.LOAD_CART_SUCCESS]: (state, { data }) => state.merge({ data }),
-  [Types.ADD_PRODUCT_SUCCESS]: (state, { product }) => state.merge({
-    data: [...state.data, product],
-    subtotal: state.subtotal + product.price,
-  }),
-  [Types.SET_AMOUNT_PRODUCT]: (state, { id, amount }) => {
-    if (state.amountProduct) {
-      state.amountProduct.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            amount,
-          };
-        }
+  [Types.UPDATE_CART_SUCCESS]: (state, { data }) => {
+    let newSubtotal = 0;
 
-        return item;
-      });
-    } else {
-      state.amountProduct.push({ id, amount });
-    }
+    data.map((item) => {
+      newSubtotal += item.price * item.quantity;
 
-    return state;
+      return item;
+    });
+
+    return state.merge({ data, subtotal: Math.round(newSubtotal * 100) / 100 });
   },
 });
